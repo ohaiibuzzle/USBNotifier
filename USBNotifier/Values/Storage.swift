@@ -18,17 +18,27 @@ struct Storage {
 
 extension Storage {
     final class Observable: ObservableObject {
+
         var detectionDelay: Int {
             get { Storage.shared.detectionDelay }
-            set { Storage.shared.detectionDelay = newValue }
+            set {
+                Storage.shared.detectionDelay = newValue
+                objectWillChange.send()
+            }
         }
         var connectionSound: Bool {
             get { Storage.shared.connectionSound }
-            set { Storage.shared.connectionSound = newValue }
+            set {
+                Storage.shared.connectionSound = newValue
+                objectWillChange.send()
+            }
         }
         var ephemeralNotifs: Bool {
             get { Storage.shared.ephemeralNotifs }
-            set { Storage.shared.ephemeralNotifs = newValue }
+            set {
+                Storage.shared.ephemeralNotifs = newValue
+                objectWillChange.send()
+            }
         }
     }
 }

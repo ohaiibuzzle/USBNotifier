@@ -9,9 +9,12 @@ import Foundation
 import ServiceManagement
 
 struct LaunchAtStartup {
+    fileprivate static let observable = Observable()
+
     public static var status: Bool {
         get { SMAppService.mainApp.status == .enabled }
         set {
+            observable.objectWillChange.send()
             if newValue {
                 setItemLaunchAtLogin()
             } else {
