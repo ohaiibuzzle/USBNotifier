@@ -15,6 +15,8 @@
 		ABA6E3202B50ECE70054F69E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E31F2B50ECE70054F69E /* Storage.swift */; };
 		ABA6E3242B5113FA0054F69E /* USBDetectorStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */; };
 		ABA6E3282B511C090054F69E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ABA6E3272B511C090054F69E /* Localizable.xcstrings */; };
+		ABF7E1A22B51501C0036DDC3 /* USBControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7E1A12B51501C0036DDC3 /* USBControl.swift */; };
+		ABF7E1A52B5152C90036DDC3 /* Dialogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7E1A42B5152C90036DDC3 /* Dialogs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		ABA6E31F2B50ECE70054F69E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDetectorStatus.swift; sourceTree = "<group>"; };
 		ABA6E3272B511C090054F69E /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		ABF7E1A12B51501C0036DDC3 /* USBControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBControl.swift; sourceTree = "<group>"; };
+		ABF7E1A42B5152C90036DDC3 /* Dialogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialogs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,11 +65,10 @@
 			isa = PBXGroup;
 			children = (
 				ABA6E3132B50EA480054F69E /* USBNotifier.entitlements */,
-				ABA6E30E2B50EA480054F69E /* Assets.xcassets */,
-				ABA6E3272B511C090054F69E /* Localizable.xcstrings */,
 				ABA6E30A2B50EA460054F69E /* USBNotifierApp.swift */,
 				ABA6E31C2B50EB440054F69E /* Core */,
 				ABA6E3102B50EA480054F69E /* Preview Content */,
+				ABF7E1A32B5151C50036DDC3 /* Resources */,
 				ABA6E3222B5113350054F69E /* Values */,
 				ABA6E31B2B50EB2E0054F69E /* Views */,
 			);
@@ -84,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				ABA6E3192B50EA9E0054F69E /* MenuBarView.swift */,
+				ABF7E1A42B5152C90036DDC3 /* Dialogs.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -92,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				ABA6E31D2B50EB500054F69E /* USBDetector.swift */,
+				ABF7E1A12B51501C0036DDC3 /* USBControl.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -103,6 +108,15 @@
 				ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */,
 			);
 			path = Values;
+			sourceTree = "<group>";
+		};
+		ABF7E1A32B5151C50036DDC3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ABA6E30E2B50EA480054F69E /* Assets.xcassets */,
+				ABA6E3272B511C090054F69E /* Localizable.xcstrings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,7 +212,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABA6E30B2B50EA460054F69E /* USBNotifierApp.swift in Sources */,
+				ABF7E1A52B5152C90036DDC3 /* Dialogs.swift in Sources */,
 				ABA6E3242B5113FA0054F69E /* USBDetectorStatus.swift in Sources */,
+				ABF7E1A22B51501C0036DDC3 /* USBControl.swift in Sources */,
 				ABA6E3202B50ECE70054F69E /* Storage.swift in Sources */,
 				ABA6E31E2B50EB500054F69E /* USBDetector.swift in Sources */,
 				ABA6E31A2B50EA9E0054F69E /* MenuBarView.swift in Sources */,
@@ -342,6 +358,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "USBNotifier needs this permission to eject disks";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -372,6 +389,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "USBNotifier needs this permission to eject disks";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
