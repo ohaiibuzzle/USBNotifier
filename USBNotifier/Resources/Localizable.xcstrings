@@ -141,6 +141,16 @@
         }
       }
     },
+    "usb.service.ephemeral" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Old Notifications "
+          }
+        }
+      }
+    },
     "usb.service.makeSound" : {
       "localizations" : {
         "en" : {

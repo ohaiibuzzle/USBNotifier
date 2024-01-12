@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @State var detectionDelay: Int = Storage.shared.detectionDelay
-    @State var playSounds: Bool = Storage.shared.connectionSound
+    @ObservedObject var storage = Storage.Observable()
     @ObservedObject var autostart = LaunchAtStartup.Observable()
 
     @State private var possibleDetectionDelays = [1, 5, 10, 60]
@@ -36,22 +35,18 @@ struct MenuBarView: View {
             Divider()
 
             Menu {
-                Picker("usb.service.delay", selection: $detectionDelay) {
+                Picker("usb.service.delay", selection: $storage.detectionDelay) {
                     ForEach(possibleDetectionDelays, id: \.self) { delay in
                         Text("\(delay) second" + (delay == 1 ? "" : String(localized: "plural.ext"))).tag(delay)
                     }
                 }
-                .onChange(of: detectionDelay) { newValue in
-                    Storage.shared.detectionDelay = newValue
-                    restartDetection()
-                }
 
-                Toggle(isOn: $playSounds) {
+                Toggle(isOn: $storage.connectionSound) {
                     Text("usb.service.makeSound")
                 }
-                .onChange(of: playSounds) { newValue in
-                    Storage.shared.connectionSound = newValue
-                    restartDetection()
+
+                Toggle(isOn: $storage.ephemeralNotifs) {
+                    Text("usb.service.ephemeral")
                 }
 
                 Toggle(isOn: $autostart.status) {

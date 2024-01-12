@@ -122,6 +122,10 @@ class USBDetector {
         }
     }
 
+    func clearNotifications() {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+    }
+
     private func sendNotifications(for devices: [USBDevice],
                                    status: USBConnectionStatus,
                                    sound: Bool = false) {
@@ -174,6 +178,11 @@ class USBDetector {
 
             for device in devices where !newDevices.contains(where: { $0.id == device.id }) {
                 disconnectedDevices.append(device)
+            }
+
+            if (connectedDevices.count > 0 || disconnectedDevices.count > 0)
+                && Storage.shared.ephemeralNotifs {
+                clearNotifications()
             }
 
             // Prevent mass notifications spam
