@@ -1,7 +1,7 @@
 # USB Notifier
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ohaiibuzzle/USBNotifier/senpai/USBNotifier/Assets.xcassets/AppIcon.appiconset/USBNotifier-256.png"/>
+  <img src="https://raw.githubusercontent.com/ohaiibuzzle/USBNotifier/senpai/USBNotifier/Resources/Assets.xcassets/AppIcon.appiconset/USBNotifier-256.png"/>
   <h4 align="center">Know your USBs</h4>
 </p>
 
