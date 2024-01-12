@@ -101,22 +101,22 @@
         }
       }
     },
-    "toggle.off" : {
+    "usb.connected" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Off"
+            "value" : "USB Device Connected"
           }
         }
       }
     },
-    "toggle.on" : {
+    "usb.disconnected" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On"
+            "value" : "USB Device Disconnected"
           }
         }
       }
@@ -126,7 +126,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autostart"
+            "value" : "Open at Login"
           }
         }
       }
@@ -147,6 +147,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sound"
+          }
+        }
+      }
+    },
+    "usb.service.pause" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        }
+      }
+    },
+    "usb.service.paused" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
           }
         }
       }
@@ -177,26 +197,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Status:"
-          }
-        }
-      }
-    },
-    "usb.service.stop" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stop"
-          }
-        }
-      }
-    },
-    "usb.service.stopped" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stopped"
           }
         }
       }

@@ -101,9 +101,9 @@ class USBDetector {
         let notificationContent = UNMutableNotificationContent()
         switch status {
         case .connected:
-            notificationContent.title = String("usb.connected")
+            notificationContent.title = String(localized: "usb.connected")
         case .disconnected:
-            notificationContent.title = String("usb.disconnected")
+            notificationContent.title = String(localized: "usb.disconnected")
         }
         notificationContent.body = "\(device.manufacturer) \(device.product)"
 

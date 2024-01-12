@@ -13,5 +13,4 @@ struct Storage {
 
     @AppStorage("detectionDelay") var detectionDelay = 1
     @AppStorage("connectionSound") var connectionSound = false
-    @AppStorage("autostart") var autostart = true
 }

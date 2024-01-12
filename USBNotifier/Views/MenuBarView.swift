@@ -10,7 +10,7 @@ import SwiftUI
 struct MenuBarView: View {
     @State var detectionDelay: Int = Storage.shared.detectionDelay
     @State var playSounds: Bool = Storage.shared.connectionSound
-    @State var autostart: Bool = Storage.shared.autostart
+    @ObservedObject var autostart = LaunchAtStartup.Observable()
 
     @State private var possibleDetectionDelays = [1, 5, 10, 60]
     @ObservedObject private var detectorStatus = USBDetectorStatus.shared
@@ -19,16 +19,18 @@ struct MenuBarView: View {
         VStack {
             Text(String(localized: "usb.service.status:") + " " +
                  (detectorStatus.isRunning ? String(localized: "usb.service.running")
-                                            : String(localized: "usb.service.stopped")))
+                                            : String(localized: "usb.service.paused")))
 
             Divider()
 
-            Button("usb.service.start") {
-                USBDetector.shared.startDetection()
-            }
-
-            Button("usb.service.stop") {
-                USBDetector.shared.stopDetection()
+            if !detectorStatus.isRunning {
+                Button("usb.service.start") {
+                    USBDetector.shared.startDetection()
+                }
+            } else {
+                Button("usb.service.pause") {
+                    USBDetector.shared.stopDetection()
+                }
             }
 
             Divider()
@@ -44,18 +46,16 @@ struct MenuBarView: View {
                     restartDetection()
                 }
 
-                Picker("usb.service.makeSound", selection: $playSounds) {
-                    Text("toggle.on").tag(true)
-                    Text("toggle.off").tag(false)
+                Toggle(isOn: $playSounds) {
+                    Text("usb.service.makeSound")
                 }
                 .onChange(of: playSounds) { newValue in
                     Storage.shared.connectionSound = newValue
                     restartDetection()
                 }
 
-                Picker("usb.service.autostart", selection: $autostart) {
-                    Text("toggle.on").tag(true)
-                    Text("toggle.off").tag(false)
+                Toggle(isOn: $autostart.status) {
+                    Text("usb.service.autostart")
                 }
             }
             label: {

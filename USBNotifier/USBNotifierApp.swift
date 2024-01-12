@@ -37,10 +37,7 @@ struct USBNotifierApp: App {
             }
         }
 
-        // Start detection if autostart is enabled
-        if Storage.shared.autostart {
-            USBDetector.shared.startDetection()
-        }
+        USBDetector.shared.startDetection()
     }
 
     var body: some Scene {
