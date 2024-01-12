@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct USBNotifierApp: App {
+    init() {
+        if Storage.shared.autostart {
+            USBDetector.shared.startDetection()
+        }
+    }
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("USBNotifier", systemImage: "cable.connector") {
+            MenuBarView()
         }
     }
 }
