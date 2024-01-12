@@ -9,12 +9,13 @@ import Foundation
 import ServiceManagement
 
 struct LaunchAtStartup {
-    fileprivate static let observable = Observable()
+    static public var shared = LaunchAtStartup()
 
-    public static var status: Bool {
+    fileprivate let observable = Observable()
+
+    public var status: Bool {
         get { SMAppService.mainApp.status == .enabled }
         set {
-            observable.objectWillChange.send()
             if newValue {
                 setItemLaunchAtLogin()
             } else {
@@ -23,7 +24,7 @@ struct LaunchAtStartup {
         }
     }
 
-    private static func setItemLaunchAtLogin() {
+    private func setItemLaunchAtLogin() {
         // Use SMAppService.register because Apple is Apple.
         do {
             if status == true {
@@ -35,7 +36,7 @@ struct LaunchAtStartup {
         }
     }
 
-    private static func unsetItemLaunchAtLogin() {
+    private func unsetItemLaunchAtLogin() {
         do {
             try SMAppService.mainApp.unregister()
         } catch {
@@ -47,9 +48,10 @@ struct LaunchAtStartup {
 extension LaunchAtStartup {
 	final class Observable: ObservableObject {
 		var status: Bool {
-			get { LaunchAtStartup.status }
+            get { LaunchAtStartup.shared.status }
 			set {
-				LaunchAtStartup.status = newValue
+                LaunchAtStartup.shared.status = newValue
+                objectWillChange.send()
 			}
 		}
 	}
