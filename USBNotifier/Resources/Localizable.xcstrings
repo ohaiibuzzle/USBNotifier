@@ -6,7 +6,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld USB Devices connected"
+            "value" : "%lld USB Devices Connected"
           }
         }
       }
@@ -16,7 +16,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld USB Devices disconnected"
+            "value" : "%lld USB Devices Disconnected"
           }
         }
       }
