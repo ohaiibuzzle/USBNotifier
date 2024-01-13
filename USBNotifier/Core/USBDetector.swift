@@ -85,9 +85,17 @@ class USBDetector {
         return devices
     }
 
+    func clearNotifications() {
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+    }
+
     private func sendNotifications(for device: USBDevice,
                                    status: USBConnectionStatus,
                                    sound: Bool = false) {
+        if Storage.shared.ephemeralNotifs {
+            clearNotifications()
+        }
+
         let notificationContent = UNMutableNotificationContent()
         switch status {
         case .connected:
@@ -112,10 +120,6 @@ class USBDetector {
         }
     }
 
-    func clearNotifications() {
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-    }
-
     private func sendNotifications(for devices: [USBDevice],
                                    status: USBConnectionStatus,
                                    sound: Bool = false) {
@@ -128,6 +132,11 @@ class USBDetector {
             if deviceCount < devices.count {
                 deviceString += "\n"
             }
+        }
+
+        // If the user choosed to have the notification clears themselves, do it
+        if Storage.shared.ephemeralNotifs {
+            clearNotifications()
         }
 
         let notificationContent = UNMutableNotificationContent()
