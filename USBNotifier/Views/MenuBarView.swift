@@ -12,23 +12,23 @@ struct MenuBarView: View {
     @ObservedObject var autostart = LaunchAtStartup.Observable()
 
     @State private var possibleDetectionDelays = [1, 5, 10, 60]
-    @ObservedObject private var detectorStatus = USBDetectorStatus.shared
+    @ObservedObject private var detectorStatus = USBDetector.Observable()
 
     var body: some View {
         VStack {
             Text(String(localized: "usb.service.status:") + " " +
-                 (detectorStatus.isRunning ? String(localized: "usb.service.running")
+                 (detectorStatus.status ? String(localized: "usb.service.running")
                                             : String(localized: "usb.service.paused")))
 
             Divider()
 
-            if !detectorStatus.isRunning {
+            if !detectorStatus.status {
                 Button("usb.service.start") {
-                    USBDetector.shared.startDetection()
+                    detectorStatus.status = true
                 }
             } else {
                 Button("usb.service.pause") {
-                    USBDetector.shared.stopDetection()
+                    detectorStatus.status = false
                 }
             }
 
@@ -55,11 +55,6 @@ struct MenuBarView: View {
                 exit(0)
             }
         }
-    }
-
-    func restartDetection() {
-        USBDetector.shared.stopDetection()
-        USBDetector.shared.startDetection()
     }
 }
 

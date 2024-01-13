@@ -13,7 +13,6 @@
 		ABA6E31A2B50EA9E0054F69E /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E3192B50EA9E0054F69E /* MenuBarView.swift */; };
 		ABA6E31E2B50EB500054F69E /* USBDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E31D2B50EB500054F69E /* USBDetector.swift */; };
 		ABA6E3202B50ECE70054F69E /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E31F2B50ECE70054F69E /* Storage.swift */; };
-		ABA6E3242B5113FA0054F69E /* USBDetectorStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */; };
 		ABA6E3282B511C090054F69E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ABA6E3272B511C090054F69E /* Localizable.xcstrings */; };
 		ABF7E1A22B51501C0036DDC3 /* USBControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7E1A12B51501C0036DDC3 /* USBControl.swift */; };
 		ABF7E1A52B5152C90036DDC3 /* Dialogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7E1A42B5152C90036DDC3 /* Dialogs.swift */; };
@@ -29,7 +28,6 @@
 		ABA6E3192B50EA9E0054F69E /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		ABA6E31D2B50EB500054F69E /* USBDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDetector.swift; sourceTree = "<group>"; };
 		ABA6E31F2B50ECE70054F69E /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
-		ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDetectorStatus.swift; sourceTree = "<group>"; };
 		ABA6E3272B511C090054F69E /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ABF7E1A12B51501C0036DDC3 /* USBControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBControl.swift; sourceTree = "<group>"; };
 		ABF7E1A42B5152C90036DDC3 /* Dialogs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialogs.swift; sourceTree = "<group>"; };
@@ -108,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				ABA6E31F2B50ECE70054F69E /* Storage.swift */,
-				ABA6E3232B5113FA0054F69E /* USBDetectorStatus.swift */,
 			);
 			path = Values;
 			sourceTree = "<group>";
@@ -217,7 +214,6 @@
 			files = (
 				ABA6E30B2B50EA460054F69E /* USBNotifierApp.swift in Sources */,
 				ABF7E1A52B5152C90036DDC3 /* Dialogs.swift in Sources */,
-				ABA6E3242B5113FA0054F69E /* USBDetectorStatus.swift in Sources */,
 				ABF7E1A72B5159620036DDC3 /* LaunchAtStartup.swift in Sources */,
 				ABF7E1A22B51501C0036DDC3 /* USBControl.swift in Sources */,
 				ABA6E3202B50ECE70054F69E /* Storage.swift in Sources */,

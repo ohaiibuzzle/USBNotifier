@@ -27,6 +27,10 @@ enum USBConnectionStatus {
 class USBDetector {
     static var shared = USBDetector()
 
+    fileprivate let observable = Observable()
+
+    private var isRunning = false
+
     private func unpackDevicesFromIterator(iterator: io_iterator_t) -> [USBDevice] {
         var devices = [USBDevice]()
 
@@ -202,7 +206,7 @@ class USBDetector {
 
     private var notificationPort: IONotificationPortRef?
 
-    func startDetection() {
+    private func startDetection() {
         notificationPort = IONotificationPortCreate(kIOMainPortDefault)
 
         let runLoopSource = IONotificationPortGetRunLoopSource(notificationPort).takeUnretainedValue()
@@ -238,18 +242,20 @@ class USBDetector {
             // Clear the initial devices.
             _ = unpackDevicesFromIterator(iterator: newDevicesIterator)
             _ = unpackDevicesFromIterator(iterator: removedDevicesIterator)
-            USBDetectorStatus.shared.isRunning = true
+            self.isRunning = true
         } else {
             stopDetection()
         }
     }
 
-    func stopDetection() {
+    private func stopDetection() {
         if let notificationPort = notificationPort {
             let runLoopSource = IONotificationPortGetRunLoopSource(notificationPort).takeUnretainedValue()
             CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.defaultMode)
             IONotificationPortDestroy(notificationPort)
         }
+
+        notificationPort = nil
 
         if newDevicesIterator != 0 {
             _ = unpackDevicesFromIterator(iterator: newDevicesIterator)
@@ -263,10 +269,28 @@ class USBDetector {
             removedDevicesIterator = IO_OBJECT_NULL
         }
 
-        USBDetectorStatus.shared.isRunning = false
+        self.isRunning = false
     }
 
     deinit {
         stopDetection()
+    }
+}
+
+extension USBDetector {
+    final class Observable: ObservableObject {
+        var status: Bool {
+            get {
+                return USBDetector.shared.isRunning
+            }
+            set {
+                if newValue {
+                    USBDetector.shared.startDetection()
+                } else {
+                    USBDetector.shared.stopDetection()
+                }
+                objectWillChange.send()
+            }
+        }
     }
 }

@@ -37,7 +37,7 @@ struct USBNotifierApp: App {
             }
         }
 
-        USBDetector.shared.startDetection()
+        USBDetector.Observable().status = true
     }
 
     var body: some Scene {
