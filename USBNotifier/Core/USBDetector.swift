@@ -27,23 +27,10 @@ enum USBConnectionStatus {
 class USBDetector {
     static var shared = USBDetector()
 
-    private var detectionTask: Task<Void, Never>?
-
-    private func fetchUSBDevices() -> [USBDevice] {
+    private func unpackDevicesFromIterator(iterator: io_iterator_t) -> [USBDevice] {
         var devices = [USBDevice]()
-        let matchingDict = IOServiceMatching(kIOUSBDeviceClassName)
-        let iterator = UnsafeMutablePointer<io_iterator_t>.allocate(capacity: 1)
-        let kernResult = IOServiceGetMatchingServices(kIOMainPortDefault, matchingDict, iterator)
-        let devicePtr = iterator.pointee
-        if kernResult != KERN_SUCCESS {
-            print("Error: \(kernResult)")
-            return devices
-        }
-        if devicePtr == 0 {
-            // print("No USB devices found")
-            return devices
-        }
-        var device = IOIteratorNext(devicePtr)
+
+        var device = IOIteratorNext(iterator)
         while device != 0 {
             // Initialize variables for the object properties
             var vendorID: Int = 0
@@ -88,10 +75,9 @@ class USBDetector {
 
             // Release the device object
             IOObjectRelease(device)
-            device = IOIteratorNext(devicePtr)
+            device = IOIteratorNext(iterator)
         }
-        // Release the iterator
-        IOObjectRelease(devicePtr)
+
         return devices
     }
 
@@ -164,66 +150,123 @@ class USBDetector {
         }
     }
 
-    private func detectionLoop() {
-        var devices = fetchUSBDevices()
-        while true {
-            let newDevices = fetchUSBDevices()
+    private var newDevices: [USBDevice] = []
+    private var newDevicesTimer: Timer?
+    private var newDevicesIterator: io_iterator_t = IO_OBJECT_NULL
 
-            var connectedDevices = [USBDevice]()
-            var disconnectedDevices = [USBDevice]()
+    private var removedDevices: [USBDevice] = []
+    private var removedDevicesTimer: Timer?
+    private var removedDevicesIterator: io_iterator_t = IO_OBJECT_NULL
 
-            for device in newDevices where !devices.contains(where: { $0.id == device.id }) {
-                connectedDevices.append(device)
-            }
+    private func processNewDevices(iterator: io_iterator_t) {
+        newDevicesTimer?.invalidate()
 
-            for device in devices where !newDevices.contains(where: { $0.id == device.id }) {
-                disconnectedDevices.append(device)
-            }
+        self.newDevices.append(contentsOf: unpackDevicesFromIterator(iterator: iterator))
 
-            if (connectedDevices.count > 0 || disconnectedDevices.count > 0)
-                && Storage.shared.ephemeralNotifs {
-                clearNotifications()
-            }
-
-            // Prevent mass notifications spam
-            if connectedDevices.count > 1 {
-                sendNotifications(for: connectedDevices,
+        newDevicesTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] _ in
+            guard let self else { return }
+            if self.newDevices.count > 1 {
+                self.sendNotifications(for: self.newDevices,
                                   status: .connected,
                                   sound: Storage.shared.connectionSound)
-            } else if connectedDevices.count == 1 {
-                sendNotifications(for: connectedDevices[0],
+            } else if self.newDevices.count == 1 {
+                self.sendNotifications(for: self.newDevices[0],
                                   status: .connected,
                                   sound: Storage.shared.connectionSound)
             }
 
-            if disconnectedDevices.count > 1 {
-                sendNotifications(for: disconnectedDevices,
-                                  status: .disconnected,
-                                  sound: Storage.shared.connectionSound)
-            } else if disconnectedDevices.count == 1 {
-                sendNotifications(for: disconnectedDevices[0],
-                                  status: .disconnected,
-                                  sound: Storage.shared.connectionSound)
-            }
-
-            devices = newDevices
-            sleep(UInt32(Storage.shared.detectionDelay))
+            self.newDevices.removeAll()
         }
     }
 
-    func startDetection() {
-        if detectionTask == nil {
-            detectionTask = Task.detached(priority: .background) {
-                self.detectionLoop()
+    private func processRemovedDevices(iterator: io_iterator_t) {
+        removedDevicesTimer?.invalidate()
+
+        self.removedDevices.append(contentsOf: unpackDevicesFromIterator(iterator: iterator))
+
+        removedDevicesTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { [weak self] _ in
+            guard let self else { return }
+            if self.removedDevices.count > 1 {
+                self.sendNotifications(for: self.removedDevices,
+                                  status: .disconnected,
+                                  sound: Storage.shared.connectionSound)
+            } else if self.removedDevices.count == 1 {
+                self.sendNotifications(for: self.removedDevices[0],
+                                  status: .disconnected,
+                                  sound: Storage.shared.connectionSound)
             }
+
+            self.removedDevices.removeAll()
         }
-        USBDetectorStatus.shared.isRunning = true
+    }
+
+    private var notificationPort: IONotificationPortRef?
+
+    func startDetection() {
+        notificationPort = IONotificationPortCreate(kIOMainPortDefault)
+
+        let runLoopSource = IONotificationPortGetRunLoopSource(notificationPort).takeUnretainedValue()
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.defaultMode)
+
+        let matchingDict = IOServiceMatching(kIOUSBDeviceClassName)
+
+        let newDevicesCallbackClosure: IOServiceMatchingCallback = { context, iterator in
+            let detector = Unmanaged<USBDetector>.fromOpaque(context!).takeUnretainedValue()
+            detector.processNewDevices(iterator: iterator)
+        }
+
+        let resultAddedDevices = IOServiceAddMatchingNotification(notificationPort,
+                                    kIOMatchedNotification,
+                                    matchingDict,
+                                    newDevicesCallbackClosure,
+                                    Unmanaged.passUnretained(self).toOpaque(),
+                                    &newDevicesIterator)
+
+        let removedDevicesCallbackClosure: IOServiceMatchingCallback = { context, iterator in
+            let detector = Unmanaged<USBDetector>.fromOpaque(context!).takeUnretainedValue()
+            detector.processRemovedDevices(iterator: iterator)
+        }
+
+        let resultRemovedDevices = IOServiceAddMatchingNotification(notificationPort,
+                                    kIOTerminatedNotification,
+                                    matchingDict,
+                                    removedDevicesCallbackClosure,
+                                    Unmanaged.passUnretained(self).toOpaque(),
+                                    &removedDevicesIterator)
+
+        if resultAddedDevices == kIOReturnSuccess && resultRemovedDevices == kIOReturnSuccess {
+            // Clear the initial devices.
+            _ = unpackDevicesFromIterator(iterator: newDevicesIterator)
+            _ = unpackDevicesFromIterator(iterator: removedDevicesIterator)
+            USBDetectorStatus.shared.isRunning = true
+        } else {
+            stopDetection()
+        }
     }
 
     func stopDetection() {
-        if detectionTask != nil {
-            self.detectionTask?.cancel()
+        if let notificationPort = notificationPort {
+            let runLoopSource = IONotificationPortGetRunLoopSource(notificationPort).takeUnretainedValue()
+            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, CFRunLoopMode.defaultMode)
+            IONotificationPortDestroy(notificationPort)
         }
+
+        if newDevicesIterator != 0 {
+            _ = unpackDevicesFromIterator(iterator: newDevicesIterator)
+            IOObjectRelease(newDevicesIterator)
+            newDevicesIterator = IO_OBJECT_NULL
+        }
+
+        if removedDevicesIterator != 0 {
+            _ = unpackDevicesFromIterator(iterator: removedDevicesIterator)
+            IOObjectRelease(removedDevicesIterator)
+            removedDevicesIterator = IO_OBJECT_NULL
+        }
+
         USBDetectorStatus.shared.isRunning = false
+    }
+
+    deinit {
+        stopDetection()
     }
 }

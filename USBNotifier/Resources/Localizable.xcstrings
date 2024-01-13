@@ -131,16 +131,6 @@
         }
       }
     },
-    "usb.service.delay" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Polling Interval"
-          }
-        }
-      }
-    },
     "usb.service.ephemeral" : {
       "localizations" : {
         "en" : {
