@@ -11,7 +11,6 @@ import SwiftUI
 struct Storage {
     static var shared = Storage()
 
-    @AppStorage("detectionDelay") var detectionDelay = 1
     @AppStorage("connectionSound") var connectionSound = false
     @AppStorage("ephemeralNotifs") var ephemeralNotifs = false
 }
@@ -19,13 +18,6 @@ struct Storage {
 extension Storage {
     final class Observable: ObservableObject {
 
-        var detectionDelay: Int {
-            get { Storage.shared.detectionDelay }
-            set {
-                Storage.shared.detectionDelay = newValue
-                objectWillChange.send()
-            }
-        }
         var connectionSound: Bool {
             get { Storage.shared.connectionSound }
             set {

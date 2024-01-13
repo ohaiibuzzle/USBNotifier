@@ -35,12 +35,6 @@ struct MenuBarView: View {
             Divider()
 
             Menu {
-                Picker("usb.service.delay", selection: $storage.detectionDelay) {
-                    ForEach(possibleDetectionDelays, id: \.self) { delay in
-                        Text("\(delay) second" + (delay == 1 ? "" : String(localized: "plural.ext"))).tag(delay)
-                    }
-                }
-
                 Toggle(isOn: $storage.connectionSound) {
                     Text("usb.service.makeSound")
                 }
